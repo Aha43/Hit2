@@ -5,23 +5,33 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE99FE52-B5CB-48E7-89D6-F6B0CDE7B126}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hit2", "src\Hit2\Hit2.csproj", "{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hit2", "src\Hit2\Hit2.csproj", "{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hit2Cli", "src\Hit2Cli\Hit2Cli.csproj", "{754ACFB0-3A14-46EB-B064-C8944FCA655F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{754ACFB0-3A14-46EB-B064-C8944FCA655F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754ACFB0-3A14-46EB-B064-C8944FCA655F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754ACFB0-3A14-46EB-B064-C8944FCA655F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754ACFB0-3A14-46EB-B064-C8944FCA655F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5E5EAB3F-EE7E-460C-8856-EB6C8D678B95} = {BE99FE52-B5CB-48E7-89D6-F6B0CDE7B126}
+		{754ACFB0-3A14-46EB-B064-C8944FCA655F} = {BE99FE52-B5CB-48E7-89D6-F6B0CDE7B126}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B16B9739-911E-47EC-A2D8-670C6C50729C}
 	EndGlobalSection
 EndGlobal
