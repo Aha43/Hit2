@@ -1,4 +1,4 @@
-﻿namespace Hit2
+﻿namespace Hit2.TestNodeVisitors
 {
     public abstract class AbstractTestNodeVisitor
     {

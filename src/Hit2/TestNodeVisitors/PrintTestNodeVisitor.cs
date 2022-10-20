@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Hit2
+namespace Hit2.TestNodeVisitors
 {
     public sealed class PrintTestNodeVisitor : AbstractTestNodeVisitor
     {
