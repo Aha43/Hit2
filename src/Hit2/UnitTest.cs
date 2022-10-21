@@ -8,6 +8,8 @@ namespace Hit2
 
         internal UnitTest(TestNode[] path) => _path = path;
 
+        internal TestNode[] Path => _path;
+
         public string Name => _path[^1].UnitTest;
 
         public override string ToString()

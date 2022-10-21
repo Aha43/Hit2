@@ -4,14 +4,14 @@ namespace Hit2
 {
     public sealed class TestNode
     {
-        public string TestName { get; init; }
+        public string Name { get; init; }
 
         private string? _unitTest;
         public string UnitTest
         {
             get
             {
-                return string.IsNullOrWhiteSpace(_unitTest) ? TestName : _unitTest;
+                return string.IsNullOrWhiteSpace(_unitTest) ? Name : _unitTest;
             }
         }
 
@@ -40,7 +40,7 @@ namespace Hit2
             string testName, 
             TestNode? parent = null)
         {
-            TestName = testName;
+            Name = testName;
 
             if (parent != null)
             {
@@ -59,11 +59,6 @@ namespace Hit2
 
         public TestNode Do(string testName)
         {
-            if (_children.Any(e => e.TestName.Equals(testName)))
-            {
-                throw new ArgumentException($"duplicated named test node: {testName}");
-            }
-
             var retVal = new TestNode(testName, this);
             _children.Add(retVal);
             return retVal;
@@ -100,19 +95,19 @@ namespace Hit2
             return this;
         }
 
-        public TestNode From(string testName)
+        public TestNode From(string name)
         {
             var current = this;
             while (current != null)
             {
-                if (current.TestName.Equals(testName))
+                if (current.Name.Equals(name))
                 {
                     return current;
                 }
                 current = current.Parent;
             }
 
-            throw new ArgumentException($"ancestor test node named {testName} not found");
+            throw new ArgumentException($"ancestor test node named {name} not found");
         }
 
         public TestNode[] GetPath()
@@ -130,7 +125,7 @@ namespace Hit2
 
         public override string ToString()
         {
-            var sb = new StringBuilder($"Do: {TestName}");
+            var sb = new StringBuilder(Name);
             if (_params.Any())
             {
                 sb.Append(" with ");
@@ -145,10 +140,6 @@ namespace Hit2
 
                     sb.Append($"{e.Key} is {e.Value}");
                 }
-            }
-            if (IsLeaf)
-            {
-                sb.Append($" -> {UnitTest}");
             }
             return sb.ToString();
         }

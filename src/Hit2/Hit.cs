@@ -1,4 +1,7 @@
-﻿using Hit2.TestNodeVisitors;
+﻿using Hit2.Exceptions;
+using Hit2.TestNodeVisitors;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 
 namespace Hit2
@@ -7,25 +10,56 @@ namespace Hit2
     {
         private readonly List<TestNode> _testNodes = new();
 
-        private readonly List<UnitTest> _unitTests;
+        private readonly List<UnitTest> _unitTests = new();
 
-        public Hit()
+        private readonly List<Type> _logicTypes = new();
+
+        private readonly Dictionary<string, ITestLogic> _testLogic = new();
+
+        private readonly HitOpt _opt;
+        
+        public Hit(Action<HitOpt>? setOptions = null)
         {
-            foreach (var definer in FindTestDefiners())
+            var opt = new HitOpt();
+            setOptions?.Invoke(opt);
+            _opt = opt;
+            Initialize();
+
+            var serviceProvider = GetServiceProvider();
+            ResolveTestLogic(serviceProvider);
+        }
+
+        public async Task RunTestAsync(string name)
+        {
+            var test = _unitTests.Where(t => t.Name == name).FirstOrDefault();
+            if (test == null)
             {
-                definer.Define(this);
+                throw new ArgumentException($"Test named {name} not found");
             }
 
-            _unitTests = GetTests();
+            var world = new World();
+
+            foreach (var node in test.Path)
+            {
+                if (_testLogic.TryGetValue(node.Name, out var testLogic))
+                {
+                    await testLogic.PerformTestAsync(world).ConfigureAwait(false);
+                }
+                else
+                {
+                    throw new TestLogicNotFoundException(name, node.Name);
+                }
+            }
+        }
+
+        private void Initialize()
+        {
+            foreach (var definer in FindTestDefiners()) definer.Define(this);
+            GetTests();
         }
 
         public TestNode Do(string testName)
         {
-            if (_testNodes.Any(e => e.TestName.Equals(testName)))
-            {
-                throw new ArgumentException($"duplicated named test node: {testName}");
-            }
-
             var retVal = new TestNode(testName);
             _testNodes.Add(retVal);
             return retVal;
@@ -33,9 +67,6 @@ namespace Hit2
 
         public override string ToString()
         {
-            //var pv = new PrintTestNodeVisitor();
-            //Dfs(pv);
-            //return pv.ToString();
             var sb = new StringBuilder();
             foreach (var ut in _unitTests)
             {
@@ -75,10 +106,52 @@ namespace Hit2
             return result;
         }
 
-        private List<UnitTest> GetTests()
+        private IServiceProvider GetServiceProvider()
         {
-            var result = new List<UnitTest>();
+            var configBuilder = new ConfigurationBuilder();
+            if (!string.IsNullOrWhiteSpace(_opt.AddJsonFileToConfig))
+            {
+                configBuilder.AddJsonFile(_opt.AddJsonFileToConfig, true);
+            }
 
+            var configuration = configBuilder.Build();
+
+            var services = new ServiceCollection();
+            if (_opt.AddServices != null)
+            {
+                _opt.AddServices.Invoke(services, configuration);
+            }
+
+            AddTestLogicToServices(services);
+
+            var serviceProvider = services.BuildServiceProvider();
+            return serviceProvider;
+        }
+
+        private void AddTestLogicToServices(IServiceCollection services)
+        {
+            FindTestLogic();
+            foreach (var t in _logicTypes) services.AddSingleton(t);
+        }
+
+        private void FindTestLogic()
+        {
+            var type = typeof(ITestLogic);
+            var types = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => type.IsAssignableFrom(p));
+
+            foreach (var t in types)
+            {
+                if (!t.IsAbstract)
+                {
+                    _logicTypes.Add(t);
+                }
+            }
+        }
+
+        private void GetTests()
+        {
             var visitor = new FindLeafTestNodeVisitor();
             Dfs(visitor);
 
@@ -86,10 +159,20 @@ namespace Hit2
             {
                 var path = leaf.GetPath();
                 var unitTest = new UnitTest(path);
-                result.Add(unitTest);
+                _unitTests.Add(unitTest);
             }
+        }
 
-            return result;
+        private void ResolveTestLogic(IServiceProvider serviceProvider)
+        {
+            foreach (var t in _logicTypes)
+            {
+                var logic = serviceProvider.GetRequiredService(t) as ITestLogic;
+                if (logic != null)
+                {
+                    _testLogic.Add(logic.Name, logic);
+                }
+            }
         }
 
         #endregion

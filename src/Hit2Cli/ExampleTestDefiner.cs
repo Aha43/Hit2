@@ -8,11 +8,11 @@ namespace Hit2Cli
         {
             hit.Do("CreatePerson").With("Name", "Arne").And("LastName", "Halvrsen")
                 .Do("ReadPerson")
-                    .Do("UpdatePerson-1").With("LastName", "Halvorsen")
+                    .Do("UpdatePerson").With("LastName", "Halvorsen")
                         .Do("DeletePerson")
                         .AsUnitTest("Person-Crud-1")
 
-                .From("ReadPerson").Do("UpdatePerson-2").With("FirstName", "Arne")
+                .From("ReadPerson").Do("UpdatePerson").With("FirstName", "Arne")
                     .Do("DeletePerson")
                     .AsUnitTest("Person-Crud-2");
         }
