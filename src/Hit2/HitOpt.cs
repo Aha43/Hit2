@@ -9,5 +9,6 @@ namespace Hit2
         public bool AddUserSecretToConfig { get; set; }
         public string? AddJsonFileToConfig { get; set; }
         public Action<IServiceCollection, IConfiguration>? AddServices { get; set; }
+        public bool RelaxMode { get; set; }
     }
 }

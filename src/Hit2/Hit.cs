@@ -29,7 +29,7 @@ namespace Hit2
             ResolveTestLogic(serviceProvider);
         }
 
-        public async Task RunTestAsync(string name)
+        public async Task<TestResult> RunTestAsync(string name)
         {
             var test = _unitTests.Where(t => t.Name == name).FirstOrDefault();
             if (test == null)
@@ -39,17 +39,39 @@ namespace Hit2
 
             var world = new World();
 
+            var records = new TestRecords(name);
+
             foreach (var node in test.Path)
             {
+                var record = new TestRecord(node.Name);
                 if (_testLogic.TryGetValue(node.Name, out var testLogic))
                 {
-                    await testLogic.PerformTestAsync(world).ConfigureAwait(false);
+                    try
+                    {
+                        testLogic.Arrange(world, node, record);
+                        await testLogic.ActAsync(world, node, record).ConfigureAwait(false);
+                        testLogic.Assert(world, node, record);
+                    }
+                    catch (Exception ex)
+                    {
+                        return new TestResult(ex, records);
+                    }
                 }
                 else
                 {
-                    throw new TestLogicNotFoundException(name, node.Name);
+                    if (_opt.RelaxMode)
+                    {
+                        record.WriteLine("Missing logic, ignores (relax mode)");
+                    }
+                    else
+                    {
+                        throw new TestLogicNotFoundException(name, node.Name);
+                    }
                 }
+                records.AddRecord(record);
             }
+
+            return new TestResult(records);
         }
 
         private void Initialize()

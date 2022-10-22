@@ -3,6 +3,9 @@
     public interface ITestLogic
     {
         string Name { get; }
-        Task PerformTestAsync(World world);
+
+        void Arrange(World world, TestNode node, TestRecord record);
+        Task ActAsync(World world, TestNode node, TestRecord record);
+        void Assert(World world, TestNode node, TestRecord record);
     }
 }

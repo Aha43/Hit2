@@ -84,6 +84,22 @@ namespace Hit2
             return SetParam(name, value);
         }
 
+        public T GetParam<T>(string name) where T : class
+        {
+            if (_params.TryGetValue(name, out var val))
+            {
+                var retVal = val as T;
+                if (retVal == null)
+                {
+                    throw new ArgumentException($"Parameter '{name}' value not of required type");
+                }
+
+                return retVal;
+            }
+
+            throw new ArgumentException($"Param '{name}' not found");
+        }
+
         private TestNode SetParam(string name, object value)
         {
             if (_params.ContainsKey(name))
