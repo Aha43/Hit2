@@ -179,10 +179,15 @@ namespace Hit2
 
             foreach (var leaf in visitor.Leafs)
             {
-                var path = leaf.GetPath();
-                var unitTest = new UnitTest(path);
-                _unitTests.Add(unitTest);
+                AddTest(leaf);
             }
+        }
+
+        private void AddTest(TestNode leaf)
+        {
+            var path = leaf.GetPath();
+            var unitTest = new UnitTest(path);
+            _unitTests.Add(unitTest);
         }
 
         private void ResolveTestLogic(IServiceProvider serviceProvider)
