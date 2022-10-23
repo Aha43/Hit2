@@ -2,7 +2,7 @@
 
 namespace Hit2Cli
 {
-    public class CreatePersonTestLogic : AbstractTestLogic
+    public class CreatePersonTestLogic : TestLogicBase
     {
         public override Task ActAsync(World world, TestNode node, TestRecord record)
         {

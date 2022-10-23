@@ -88,8 +88,7 @@ namespace Hit2
         {
             if (_params.TryGetValue(name, out var val))
             {
-                var retVal = val as T;
-                if (retVal == null)
+                if (val is not T retVal)
                 {
                     throw new ArgumentException($"Parameter '{name}' value not of required type");
                 }
