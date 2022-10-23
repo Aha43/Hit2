@@ -1,6 +1,5 @@
 ﻿using Hit2.Exceptions;
 using Hit2.TestNodeVisitors;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text;
 
@@ -130,23 +129,9 @@ namespace Hit2
 
         private IServiceProvider GetServiceProvider()
         {
-            var configBuilder = new ConfigurationBuilder();
-            if (!string.IsNullOrWhiteSpace(_opt.AddJsonFileToConfig))
-            {
-                configBuilder.AddJsonFile(_opt.AddJsonFileToConfig, true);
-            }
+            AddTestLogicToServices(_opt.Services);
 
-            var configuration = configBuilder.Build();
-
-            var services = new ServiceCollection();
-            if (_opt.AddServices != null)
-            {
-                _opt.AddServices.Invoke(services, configuration);
-            }
-
-            AddTestLogicToServices(services);
-
-            var serviceProvider = services.BuildServiceProvider();
+            var serviceProvider = _opt.Services.BuildServiceProvider();
             return serviceProvider;
         }
 
