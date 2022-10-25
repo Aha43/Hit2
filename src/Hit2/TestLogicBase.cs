@@ -19,6 +19,6 @@
 
         public virtual void Arrange(World world, TestNode node, TestRecord record) { }
         public virtual Task ActAsync(World world, TestNode node, TestRecord record) => Task.CompletedTask; 
-        public virtual void Assert(World world, TestNode node, TestRecord record) { }
+        public virtual void Assert(World world, TestRecord record) { }
     }
 }

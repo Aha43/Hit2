@@ -6,6 +6,6 @@
 
         void Arrange(World world, TestNode node, TestRecord record);
         Task ActAsync(World world, TestNode node, TestRecord record);
-        void Assert(World world, TestNode node, TestRecord record);
+        void Assert(World world, TestRecord record);
     }
 }

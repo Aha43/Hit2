@@ -15,12 +15,10 @@ namespace Hit2
             }
         }
 
+        public TestNode AsUserStory(string name) => AsUnitTest(name);
+
         public TestNode AsUnitTest(string name)
         {
-            if (!IsLeaf)
-            {
-                throw new ArgumentException("Only leaf can be assigned the path's unit test name");
-            }
             if (!string.IsNullOrWhiteSpace(_unitTest))
             {
                 throw new ArgumentException("Path allready got unit test name");
@@ -29,6 +27,8 @@ namespace Hit2
             _unitTest = name;
             return this;
         }
+
+        public bool IsUnitTest => !string.IsNullOrWhiteSpace(_unitTest) || IsLeaf;
 
         public TestNode? Parent { get; init; }
 
@@ -41,15 +41,6 @@ namespace Hit2
             TestNode? parent = null)
         {
             Name = testName;
-
-            if (parent != null)
-            {
-                if (!string.IsNullOrWhiteSpace(parent._unitTest))
-                {
-                    throw new ArgumentException($"Can not add to path allready explicit named as unit test: {parent._unitTest}");
-                }
-            }
-
             Parent = parent;
         }
 
@@ -118,7 +109,7 @@ namespace Hit2
                 if (current.Name.Equals(name))
                 {
                     return current;
-                }
+                }   
                 current = current.Parent;
             }
 
