@@ -68,7 +68,7 @@ namespace Hit2
                 await t.TearDownAsync().ConfigureAwait(false);
             }
 
-            var world = new World();
+            var claims = new Claims();
 
             var records = new TestRecords(name);
 
@@ -81,9 +81,10 @@ namespace Hit2
                 {
                     try
                     {
-                        testLogic.Arrange(world, node, record);
-                        await testLogic.ActAsync(world, node, record).ConfigureAwait(false);
-                        testLogic.Assert(world, record);
+                        testLogic.Arrange(claims, node, record);
+                        await testLogic.ActAsync(claims, node, record).ConfigureAwait(false);
+                        testLogic.Assert(claims, record);
+                        testLogic.EditClaims(claims, record);
                     }
                     catch (Exception ex)
                     {
@@ -108,13 +109,15 @@ namespace Hit2
         }
         #endregion
 
-        #region DefineTests
+        #region DefineTestsAndQuaryAbout
         public TestNode Do(string testName)
         {
             var retVal = new TestNode(testName);
             _testNodes.Add(retVal);
             return retVal;
         }
+
+        public IEnumerable<string> TestNames => _testNodes.Select(n => n.Name);
         #endregion
 
         public override string ToString()

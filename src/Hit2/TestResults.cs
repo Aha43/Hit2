@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Hit2.Exceptions
+namespace Hit2
 {
     public sealed class TestResults
     {

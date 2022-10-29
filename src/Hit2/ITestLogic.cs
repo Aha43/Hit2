@@ -4,8 +4,9 @@
     {
         string Name { get; }
 
-        void Arrange(World world, TestNode node, TestRecord record);
-        Task ActAsync(World world, TestNode node, TestRecord record);
-        void Assert(World world, TestRecord record);
+        void Arrange(Claims claims, TestNode node, TestRecord record);
+        Task ActAsync(Claims claims, TestNode node, TestRecord record);
+        void Assert(Claims claims, TestRecord record);
+        void EditClaims(Claims claims, TestRecord record);
     }
 }

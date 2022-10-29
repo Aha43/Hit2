@@ -6,6 +6,8 @@ namespace Hit2
     {
         public string Name { get; init; }
 
+        public string Description { get; private set; } = string.Empty;
+
         private string? _unitTest;
         public string UnitTest
         {
@@ -13,19 +15,6 @@ namespace Hit2
             {
                 return string.IsNullOrWhiteSpace(_unitTest) ? Name : _unitTest;
             }
-        }
-
-        public TestNode AsUserStory(string name) => AsUnitTest(name);
-
-        public TestNode AsUnitTest(string name)
-        {
-            if (!string.IsNullOrWhiteSpace(_unitTest))
-            {
-                throw new ArgumentException("Path allready got unit test name");
-            }
-
-            _unitTest = name;
-            return this;
         }
 
         public bool IsUnitTest => !string.IsNullOrWhiteSpace(_unitTest) || IsLeaf;
@@ -48,6 +37,7 @@ namespace Hit2
 
         public bool IsLeaf => _children.Count == 0;
 
+        #region FluentTestDef
         public TestNode Do(string testName)
         {
             var retVal = new TestNode(testName, this);
@@ -75,6 +65,41 @@ namespace Hit2
             return SetParam(name, value);
         }
 
+        public TestNode From(string name)
+        {
+            var current = this;
+            while (current != null)
+            {
+                if (current.Name.Equals(name))
+                {
+                    return current;
+                }
+                current = current.Parent;
+            }
+
+            throw new ArgumentException($"ancestor test node named {name} not found");
+        }
+
+        public TestNode AsUserStory(string name) => AsUnitTest(name);
+
+        public TestNode AsUnitTest(string name)
+        {
+            if (!string.IsNullOrWhiteSpace(_unitTest))
+            {
+                throw new ArgumentException("Path allready got unit test name");
+            }
+
+            _unitTest = name;
+            return this;
+        }
+
+        public TestNode WithDescription(string description)
+        {
+            Description = description;
+            return this;
+        }
+        #endregion
+
         public T GetParam<T>(string name) where T : class
         {
             if (_params.TryGetValue(name, out var val))
@@ -99,21 +124,6 @@ namespace Hit2
 
             _params[name] = value;
             return this;
-        }
-
-        public TestNode From(string name)
-        {
-            var current = this;
-            while (current != null)
-            {
-                if (current.Name.Equals(name))
-                {
-                    return current;
-                }   
-                current = current.Parent;
-            }
-
-            throw new ArgumentException($"ancestor test node named {name} not found");
         }
 
         public TestNode[] GetPath()
