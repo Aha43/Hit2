@@ -7,5 +7,6 @@ namespace Hit2
         public string? ConfigName { get; set; }
         public readonly IServiceCollection Services = new ServiceCollection();
         public bool RelaxMode { get; set; }
+        public Action<Hit>? TestDefiner { get; set; }
     }
 }

@@ -28,7 +28,10 @@ namespace Hit2
 
         private void GetTests()
         {
-            ReflUtil.CreateImplementations<ITestDefiner>().ForEach(e => e.Define(this));
+            if (_opt.TestDefiner != null)
+            {
+                _opt.TestDefiner.Invoke(this);
+            }
 
             var visitor = new FindUnitTestNodeVisitor();
             _testNodes.ForEach(e => visitor.Visit(e));
@@ -60,7 +63,7 @@ namespace Hit2
             var test = _unitTests.Where(t => t.Name == name).FirstOrDefault();
             if (test == null)
             {
-                throw new ArgumentException($"Test named {name} not found");
+                throw new TestNotFoundException(name);
             }
 
             foreach (var t in _implementations.tearDowns)
@@ -81,10 +84,10 @@ namespace Hit2
                 {
                     try
                     {
-                        testLogic.Arrange(claims, node, record);
-                        await testLogic.ActAsync(claims, node, record).ConfigureAwait(false);
-                        testLogic.Assert(claims, record);
-                        testLogic.EditClaims(claims, record);
+                        await testLogic.ArrangeAsync(claims, node.TestData, record).ConfigureAwait(false);
+                        await testLogic.ActAsync(claims, node.TestData, record).ConfigureAwait(false);
+                        await testLogic.AssertAsync(claims, node.TestData, record).ConfigureAwait(false);
+                        await testLogic.EditClaimsAsync(claims, node.TestData, record).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
@@ -117,7 +120,9 @@ namespace Hit2
             return retVal;
         }
 
-        public IEnumerable<string> TestNames => _testNodes.Select(n => n.Name);
+        public TestNode Do<T>() where T : class => Do(typeof(T).Name);
+
+        public IEnumerable<string> TestNames => _unitTests.Select(n => n.Name);
         #endregion
 
         public override string ToString()

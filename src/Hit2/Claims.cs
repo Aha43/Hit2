@@ -45,7 +45,7 @@ namespace Hit2
             throw new ClaimDoesNotExistException(name);
         }
 
-        public Claims Change(string oldName, string newName)
+        public Claims ChangeName(string oldName, string newName)
         {
             if (_claims.ContainsKey(oldName))
             {
@@ -63,6 +63,16 @@ namespace Hit2
             throw new ClaimDoesNotExistException(oldName);
         }
 
+        public Claims ChangeValue(string name, object newValue)
+        {
+            if (_claims.ContainsKey(name))
+            {
+                _claims[name] = newValue;
+                return this;
+            }
+
+            throw new ClaimDoesNotExistException(name);
+        }
 
     }
 
