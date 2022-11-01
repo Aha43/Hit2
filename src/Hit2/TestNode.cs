@@ -46,6 +46,9 @@ namespace Hit2
             return this;
         }
 
+        public TestNode And => this;
+        public TestNode Then => this;
+
         public TestNode From(string name)
         {
             var current = this;

@@ -2,11 +2,11 @@
 
 namespace Hit2.XUnit
 {
-    public abstract class HitXunitClassData : IEnumerable<object[]>
+    public abstract class HitXunit : IEnumerable<object[]>
     {
         private readonly Hit _hit;
 
-        protected HitXunitClassData(Action<HitOpt>? setOptions = null) => _hit = new Hit(setOptions);
+        protected HitXunit(Action<HitOpt>? setOptions = null) => _hit = new Hit(setOptions);
 
         public IEnumerator<object[]> GetEnumerator()
         {
